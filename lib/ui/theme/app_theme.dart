@@ -7,6 +7,7 @@ class AppTheme {
   static const Color secondary = Color(0xFF456882);
   static const Color accent = Color(0xFFD2C1B6);
   static const Color accent2 = Color(0xFF7C7861);
+  static const Color bgColor = Colors.white;
 
   // Use this helper for readability
   static int _alpha(double opacity) => (255 * opacity).round();
