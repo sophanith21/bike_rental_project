@@ -1,7 +1,8 @@
-import 'package:bike_rental_project/model/user/user_pass.dart';
+import 'package:bike_rental_project/ui/my_app.dart';
 import 'package:bike_rental_project/ui/screens/payment/view_model/payment_view_model.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/ui/utils/async_value.dart';
+import 'package:bike_rental_project/ui/utils/nav_util.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_dialog.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_filled_button.dart';
 import 'package:bike_rental_project/ui/widgets/pass_card.dart';
@@ -46,7 +47,9 @@ class _PaymentContentState extends State<PaymentContent> {
                 width: 212,
                 child: BikeRentalButton(
                   label: "Find Station",
-                  onPressed: () {},
+                  onPressed: () {
+                    NavUtil.toHome(ScreenNavigation.map);
+                  },
                 ),
               ),
             ),
@@ -68,7 +71,7 @@ class _PaymentContentState extends State<PaymentContent> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => NavUtil.back(),
           icon: Icon(Symbols.arrow_back, size: 40, color: AppTheme.primary),
         ),
 
@@ -138,7 +141,11 @@ class _PaymentContentState extends State<PaymentContent> {
               height: 50,
               child: BikeRentalButton(
                 onPressed: termServiceAgreed ? onPay : null,
-                label: vm.paymentStatus == null ? "Pay \$2.00" : "Processing",
+                label: vm.paymentStatus == null
+                    ? "Pay \$2.00"
+                    : vm.paymentStatus!.state == AsyncValueState.loading
+                    ? "Processing"
+                    : "Processing Complete",
               ),
             ),
           ],

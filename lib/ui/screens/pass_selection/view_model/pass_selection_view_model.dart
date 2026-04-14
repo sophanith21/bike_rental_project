@@ -3,6 +3,7 @@ import 'package:bike_rental_project/model/booking/pass_subscription.dart';
 import 'package:bike_rental_project/model/user/user_pass.dart';
 import 'package:bike_rental_project/ui/states/user_state.dart';
 import 'package:bike_rental_project/ui/utils/async_value.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class PassSelectionViewModel extends ChangeNotifier {
@@ -30,6 +31,18 @@ class PassSelectionViewModel extends ChangeNotifier {
 
   AsyncValue<List<PassSubscription>> passSubscriptionsAsyncValue =
       AsyncValue.loading();
+
+  List<PassSubscription> get sortedPassSubscriptions {
+    final data = passSubscriptionsAsyncValue.data ?? [];
+    if (!isSubscriptionActive) return data;
+
+    final active = data.firstWhereOrNull(
+      (e) => e.id == activePass?.passSubscriptionId,
+    );
+    if (active == null) return data;
+
+    return [active, ...data.where((e) => e.id != active.id)];
+  }
 
   bool get isSubscriptionActive => userState.userPass != null;
 

@@ -3,6 +3,7 @@ import 'package:bike_rental_project/ui/widgets/ticket/ticket_widget.dart';
 import 'package:flutter/material.dart';
 
 class PassCard extends StatelessWidget {
+  final bool isActive; // Is the pass the current user active pass?
   final String title;
   final Map<IconData, String> coreBenefits;
   final Widget? action;
@@ -11,11 +12,12 @@ class PassCard extends StatelessWidget {
     required this.title,
     required this.coreBenefits,
     this.action,
+    this.isActive = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TicketWidget(
+    Widget child = TicketWidget(
       topContent: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
 
@@ -43,5 +45,14 @@ class PassCard extends StatelessWidget {
       ),
       bottomContent: action ?? SizedBox.shrink(),
     );
+
+    return isActive
+        ? Banner(
+            message: 'Active Pass',
+            location: BannerLocation.topEnd, // top right corner
+            color: Colors.red,
+            child: child,
+          )
+        : child;
   }
 }
