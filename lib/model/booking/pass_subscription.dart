@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:bike_rental_project/model/booking/benefit.dart';
 
 class PassSubscription {
   final String id;
   final String title;
-  final Map<IconData, String> coreBenefits;
+  final List<Benefit> coreBenefits;
   final double price;
   final Duration validDuration;
 

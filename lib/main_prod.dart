@@ -1,9 +1,9 @@
 import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository.dart';
-import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository_mock.dart';
+import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository_prod.dart';
 import 'package:bike_rental_project/data/repositories/user/user_repository.dart';
-import 'package:bike_rental_project/data/repositories/user/user_repository_mock.dart';
+import 'package:bike_rental_project/data/repositories/user/user_repository_prod.dart';
 import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository.dart';
-import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository_mock.dart';
+import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository_prod.dart';
 import 'package:bike_rental_project/firebase_options.dart';
 import 'package:bike_rental_project/ui/my_app.dart';
 import 'package:bike_rental_project/ui/states/user_state.dart';
@@ -14,10 +14,10 @@ import 'package:provider/single_child_widget.dart';
 
 List<SingleChildWidget> dependency = [
   Provider<PassSubscriptionRepository>(
-    create: (context) => PassSubscriptionRepositoryMock(),
+    create: (context) => PassSubscriptionRepositoryProd(),
   ),
-  Provider<UserRepository>(create: (context) => UserRepositoryMock()),
-  Provider<UserPassRepository>(create: (context) => UserPassRepositoryMock()),
+  Provider<UserRepository>(create: (context) => UserRepositoryProd()),
+  Provider<UserPassRepository>(create: (context) => UserPassRepositoryProd()),
   ChangeNotifierProxyProvider2<UserPassRepository, UserRepository, UserState>(
     create: (BuildContext context) {
       return UserState(

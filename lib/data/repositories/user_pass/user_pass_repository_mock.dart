@@ -1,14 +1,17 @@
 import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository.dart';
+import 'package:bike_rental_project/data/sources/seed_data.dart';
 import 'package:bike_rental_project/model/user/user_pass.dart';
 import 'package:collection/collection.dart';
 
 class UserPassRepositoryMock implements UserPassRepository {
-  List<UserPass> userPassList = [];
+  List<UserPass> userPassList = SeedData.userPasses;
   @override
-  Future<UserPass?> getActiveUserPass(String userId) async {
-    return userPassList.firstWhereOrNull(
+  Stream<UserPass?> getActiveUserPass(String userId) {
+    final result = userPassList.firstWhereOrNull(
       (e) => e.userId == userId && e.passStatus == PassStatus.active,
     );
+
+    return Stream.value(result);
   }
 
   @override

@@ -39,6 +39,7 @@ class _PaymentContentState extends State<PaymentContent> {
           break;
         case AsyncValueState.success:
           showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (context) => BikeRentalDialog(
               title: "Payment Complete",
@@ -141,11 +142,7 @@ class _PaymentContentState extends State<PaymentContent> {
               height: 50,
               child: BikeRentalButton(
                 onPressed: termServiceAgreed ? onPay : null,
-                label: vm.paymentStatus == null
-                    ? "Pay \$2.00"
-                    : vm.paymentStatus!.state == AsyncValueState.loading
-                    ? "Processing"
-                    : "Processing Complete",
+                label: vm.buttonLabel,
               ),
             ),
           ],

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bike_rental_project/data/repositories/user/user_repository.dart';
 import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository.dart';
 import 'package:bike_rental_project/model/user/user.dart';
@@ -7,6 +9,10 @@ import 'package:flutter/material.dart';
 class UserState extends ChangeNotifier {
   final UserPassRepository userPassRepository;
   final UserRepository userRepository;
+  bool isDisposed = false;
+
+  StreamSubscription<UserPass?>? userPassStreamSubscription;
+
   User? user;
   UserPass? userPass;
   UserState({
@@ -20,12 +26,30 @@ class UserState extends ChangeNotifier {
 
   Future<void> init() async {
     user = await userRepository.getUser(
-      "alice",
+      "Allya",
       "",
-    ); // This is done for testing
+    ); // This is done for testing only
     if (user != null) {
-      userPass = await userPassRepository.getActiveUserPass(user!.id);
+      userPassStreamSubscription = userPassRepository
+          .getActiveUserPass(user!.id)
+          .listen(
+            (data) {
+              userPass = data;
+              if (!isDisposed) notifyListeners();
+            },
+            onError: (err) {
+              if (!isDisposed) notifyListeners();
+            },
+          );
     }
+    if (!isDisposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    userPassStreamSubscription?.cancel();
+    isDisposed = true;
+    super.dispose();
   }
 
   Future<void> login(String username, String password) async {

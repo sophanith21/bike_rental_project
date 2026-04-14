@@ -62,9 +62,10 @@ class _MyAppState extends State<MyApp> {
                   child: IndexedStack(
                     index: value.index,
                     children: [
-                      Placeholder(),
-                      Placeholder(),
-                      PassSelectionScreen(),
+                      // MUST BE CONST to prevent rebuilt
+                      const Placeholder(),
+                      const Placeholder(),
+                      const PassSelectionScreen(),
                     ],
                   ),
                 ),

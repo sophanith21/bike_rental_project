@@ -6,16 +6,18 @@ class UserPass {
   final String passSubscriptionId;
   final DateTime startDate;
   final DateTime expirationDate;
-  final PassStatus passStatus;
 
   const UserPass({
     required this.id,
     required this.startDate,
     required this.expirationDate,
-    required this.passStatus,
     required this.passSubscriptionId,
     required this.userId,
   });
+
+  PassStatus get passStatus => DateTime.now().isBefore(expirationDate)
+      ? PassStatus.active
+      : PassStatus.inactive;
 
   @override
   bool operator ==(Object other) =>
@@ -38,4 +40,9 @@ class UserPass {
     expirationDate,
     passStatus,
   );
+
+  @override
+  String toString() {
+    return 'UserPass(id: $id, userId: $userId, subscriptionId: $passSubscriptionId, start: $startDate, expires: $expirationDate)';
+  }
 }

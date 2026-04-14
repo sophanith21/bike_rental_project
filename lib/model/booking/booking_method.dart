@@ -1,7 +1,7 @@
 enum BookingType { pass, oneTime }
 
 class BookingMethod {
-  final String passId;
+  final String? passId;
   final String rentDate;
   final double price;
   final BookingType bookingType;

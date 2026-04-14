@@ -18,7 +18,6 @@ class PaymentViewModel extends ChangeNotifier {
         id: Uuid().v4(),
         startDate: DateTime.now(),
         expirationDate: DateTime.now().add(selectedSubs.validDuration),
-        passStatus: PassStatus.active,
         passSubscriptionId: selectedSubs.id,
         userId: userState.user!.id,
       );
@@ -29,5 +28,12 @@ class PaymentViewModel extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  String get buttonLabel {
+    final state = paymentStatus?.state;
+    if (state == AsyncValueState.loading) return "Processing";
+    if (state == AsyncValueState.success) return "Processing Complete";
+    return "Pay \$${selectedSubs.price.toStringAsFixed(2)}";
   }
 }

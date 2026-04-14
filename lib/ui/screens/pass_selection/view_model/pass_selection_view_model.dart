@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class PassSelectionViewModel extends ChangeNotifier {
   final UserState userState;
   final PassSubscriptionRepository passSubscriptionRepository;
-
+  bool isDisposed = false;
   PassSelectionViewModel({
     required this.userState,
     required this.passSubscriptionRepository,
@@ -25,7 +25,7 @@ class PassSelectionViewModel extends ChangeNotifier {
     } catch (err) {
       passSubscriptionsAsyncValue = AsyncValue.error(err);
     } finally {
-      notifyListeners();
+      if (!isDisposed) notifyListeners();
     }
   }
 
@@ -44,7 +44,15 @@ class PassSelectionViewModel extends ChangeNotifier {
     return [active, ...data.where((e) => e.id != active.id)];
   }
 
-  bool get isSubscriptionActive => userState.userPass != null;
+  bool get isSubscriptionActive =>
+      userState.userPass != null &&
+      userState.userPass!.passStatus == PassStatus.active;
 
   UserPass? get activePass => userState.userPass;
+
+  @override
+  void dispose() {
+    isDisposed = true;
+    super.dispose();
+  }
 }
