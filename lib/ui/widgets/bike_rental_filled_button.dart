@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class BikeRentalButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isFilled;
 
   const BikeRentalButton({
@@ -15,6 +13,12 @@ class BikeRentalButton extends StatelessWidget {
     this.isFilled = true,
   });
 
+  Color get bgColor {
+    if (onPressed == null) return AppTheme.primary.withValues(alpha: 0.5);
+
+    return isFilled ? AppTheme.primary : AppTheme.bgColor;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -23,7 +27,7 @@ class BikeRentalButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: AppTheme.brLarge,
           border: Border.all(color: AppTheme.primary, width: 2),
-          color: isFilled ? AppTheme.primary : AppTheme.bgColor,
+          color: bgColor,
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 2),
@@ -40,7 +44,7 @@ class BikeRentalButton extends StatelessWidget {
             child: Center(
               child: Text(
                 label,
-                style: AppTheme.labelLarge.copyWith(
+                style: AppTheme.titleLarge.copyWith(
                   color: isFilled ? AppTheme.bgColor : AppTheme.primary,
                 ),
                 textAlign: TextAlign.center,

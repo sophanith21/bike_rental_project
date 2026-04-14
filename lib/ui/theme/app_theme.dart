@@ -103,6 +103,11 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       textTheme: GoogleFonts.playpenSansTextTheme(),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: primary),
+      appBarTheme: AppBarTheme(
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: AppTheme.bgColor,
+      ),
     );
   }
 }

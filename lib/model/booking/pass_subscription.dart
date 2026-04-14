@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 class PassSubscription {
   final String id;
   final String title;
-  final String description;
+  final Map<IconData, String> coreBenefits;
   final double price;
   final Duration validDuration;
 
@@ -9,7 +11,7 @@ class PassSubscription {
     required this.id,
     required this.title,
     required this.price,
-    required this.description,
+    required this.coreBenefits,
     required this.validDuration,
   });
 }

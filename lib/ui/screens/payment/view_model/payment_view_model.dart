@@ -1,0 +1,33 @@
+import 'package:bike_rental_project/model/booking/pass_subscription.dart';
+import 'package:bike_rental_project/model/user/user_pass.dart';
+import 'package:bike_rental_project/ui/states/user_state.dart';
+import 'package:bike_rental_project/ui/utils/async_value.dart';
+import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+
+class PaymentViewModel extends ChangeNotifier {
+  final PassSubscription selectedSubs;
+  final UserState userState;
+
+  PaymentViewModel({required this.selectedSubs, required this.userState});
+
+  AsyncValue<bool>? paymentStatus;
+  Future<void> confirmPayment() async {
+    try {
+      UserPass confirmedPass = UserPass(
+        id: Uuid().v4(),
+        startDate: DateTime.now(),
+        expirationDate: DateTime.now().add(selectedSubs.validDuration),
+        passStatus: PassStatus.active,
+        passSubscriptionId: selectedSubs.id,
+        userId: userState.user!.id,
+      );
+      await userState.updateUserPass(confirmedPass);
+      paymentStatus = AsyncValue.success(true);
+    } catch (err) {
+      paymentStatus = AsyncValue.error(err);
+    } finally {
+      notifyListeners();
+    }
+  }
+}
