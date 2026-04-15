@@ -25,21 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-<<<<<<< HEAD
         return macos;
       case TargetPlatform.windows:
         return windows;
-=======
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
->>>>>>> 9fc08d2 (feat: implement data source for selecting a pass logic)
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -78,7 +66,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'bike-rental-project-3d4e6.firebasestorage.app',
     iosBundleId: 'com.example.bikeRentalProject',
   );
-<<<<<<< HEAD
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyC1ZBBlG_My4-x9O8NylRQFu86p4yYwMSo',
@@ -98,6 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'bike-rental-project-3d4e6.firebasestorage.app',
     measurementId: 'G-3935XYNQLT',
   );
-=======
->>>>>>> 9fc08d2 (feat: implement data source for selecting a pass logic)
+
 }
