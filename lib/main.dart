@@ -1,9 +1,14 @@
-import 'package:bike_rental_project/ui/map/map_screen.dart';
+// import 'package:bike_rental_project/ui/map/map_screen.dart';
+import 'package:bike_rental_project/firebase_options.dart';
+import 'package:bike_rental_project/ui/map/map_screen_pro.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
