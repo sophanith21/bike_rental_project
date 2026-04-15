@@ -11,6 +11,7 @@ class UserState extends ChangeNotifier {
   final UserRepository userRepository;
   bool isDisposed = false;
 
+  Timer? expirationTimer;
   StreamSubscription<UserPass?>? userPassStreamSubscription;
 
   User? user;
@@ -34,7 +35,20 @@ class UserState extends ChangeNotifier {
           .getActiveUserPass(user!.id)
           .listen(
             (data) {
-              userPass = data;
+              expirationTimer?.cancel();
+
+              if (data == null) {
+                userPass = null;
+              } else {
+                Duration remainingTime = data.expirationDate.difference(
+                  DateTime.now(),
+                );
+                userPass = data;
+                expirationTimer = Timer(remainingTime, () {
+                  userPass = null;
+                  notifyListeners();
+                });
+              }
               if (!isDisposed) notifyListeners();
             },
             onError: (err) {
@@ -48,6 +62,7 @@ class UserState extends ChangeNotifier {
   @override
   void dispose() {
     userPassStreamSubscription?.cancel();
+    expirationTimer?.cancel();
     isDisposed = true;
     super.dispose();
   }
@@ -65,8 +80,7 @@ class UserState extends ChangeNotifier {
 
   Future<void> updateUserPass(UserPass updatedUserPass) async {
     if (userPass != updatedUserPass) {
-      userPass = await userPassRepository.createUserPass(updatedUserPass);
-      notifyListeners();
+      await userPassRepository.createUserPass(updatedUserPass);
     }
   }
 }
