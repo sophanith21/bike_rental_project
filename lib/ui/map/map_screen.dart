@@ -1,5 +1,5 @@
-import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_mock_repository.dart';
-import 'package:bike_rental_project/data/repositories/bike_station/bike_station_mock_repository.dart';
+import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_repository.dart';
+import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
 import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/ui/map/content/map_content.dart';
 import 'package:bike_rental_project/ui/map/view_model/map_view_model.dart';
@@ -12,8 +12,8 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => MapViewModel(
-        bikeStationRepository: BikeStationMockRepository(),
-        bikeSlotRepository: BikeSlotMockRepository(),
+        bikeStationRepository: context.read<BikeStationRepository>(),
+        bikeSlotRepository: context.read<BikeSlotRepository>(),
         bikeSlotStatus: BikeSlotStatus
             .occupied, // todo change to bookingStatus (complete:parking ui, ongoing:bike ui and null: bike ui)
       ),

@@ -1,3 +1,7 @@
+import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_mock_repository.dart';
+import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_repository.dart';
+import 'package:bike_rental_project/data/repositories/bike_station/bike_station_mock_repository.dart';
+import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
 import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository.dart';
 import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository_mock.dart';
 import 'package:bike_rental_project/data/repositories/user/user_repository.dart';
@@ -18,6 +22,10 @@ List<SingleChildWidget> dependency = [
   ),
   Provider<UserRepository>(create: (context) => UserRepositoryMock()),
   Provider<UserPassRepository>(create: (context) => UserPassRepositoryMock()),
+  Provider<BikeSlotRepository>(create: (context) => BikeSlotMockRepository()),
+  Provider<BikeStationRepository>(
+    create: (context) => BikeStationMockRepository(),
+  ),
   ChangeNotifierProxyProvider2<UserPassRepository, UserRepository, UserState>(
     create: (BuildContext context) {
       return UserState(
