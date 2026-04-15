@@ -1,7 +1,9 @@
+import 'package:bike_rental_project/model/bike/bike_station.dart';
 import 'package:bike_rental_project/ui/map/widgets/location_marker.dart';
 import 'package:bike_rental_project/ui/map/view_model/map_view_model.dart';
 import 'package:bike_rental_project/ui/map/widgets/station_panel.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -13,6 +15,7 @@ class MapContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MapViewModel mapVm = context.watch<MapViewModel>();
+    final List<BikeStation> stationValues = mapVm.stationsState?.data ?? [];
     return Scaffold(
       body: Stack(
         children: [
@@ -30,7 +33,7 @@ class MapContent extends StatelessWidget {
                 userAgentPackageName: 'com.example.app',
               ),
               MarkerLayer(
-                markers: mapVm.filteredStations
+                markers: stationValues
                     .map(
                       (s) => Marker(
                         point: s.stationLocation,
@@ -84,14 +87,17 @@ class MapContent extends StatelessWidget {
             ),
           ),
 
+          if (mapVm.stationsState?.state == AsyncValueState.loading)
+            Center(child: CircularProgressIndicator()),
+
           if (mapVm.selectedStation != null)
             DraggableScrollableSheet(
-              initialChildSize: 0.4,
-              minChildSize: 0.4,
-              maxChildSize: 0.95,
+              initialChildSize: 0.37,
+              minChildSize: 0.37,
+              maxChildSize: 1,
               expand: true,
               snap: true,
-              snapSizes: [0.4, 0.95],
+              snapSizes: [0.37, 1],
               builder: (context, scrollController) {
                 return StationDetailsPanel(
                   bikeSlots: mapVm.slotsAtWithStatus(

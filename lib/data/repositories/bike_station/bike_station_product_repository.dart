@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BikeStationProductRepository implements BikeStationRepository {
   final FirebaseFirestore db = FirebaseFirestore.instance;
-  final String collection = 'bike_stations';
 
   @override
   Future<List<BikeStation>> getBikeStations() async {

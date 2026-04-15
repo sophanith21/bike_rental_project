@@ -1,7 +1,9 @@
+import 'package:bike_rental_project/ui/map/map_screen.dart';
 import 'package:bike_rental_project/ui/screens/pass_selection/pass_selection_screen.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/utils/nav_util.dart';
 import 'package:bike_rental_project/ui/widgets/navigation_bar/bike_rental_bottom_navigation_bar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +37,12 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Bike Rental',
         theme: AppTheme.lightTheme,
-        scrollBehavior: const ScrollBehavior().copyWith(
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.trackpad,
+          },
           physics: const ClampingScrollPhysics(),
         ),
         home: ValueListenableBuilder(
@@ -64,7 +71,7 @@ class _MyAppState extends State<MyApp> {
                     children: [
                       // MUST BE CONST to prevent rebuilt
                       const Placeholder(),
-                      const Placeholder(),
+                      const MapScreen(),
                       const PassSelectionScreen(),
                     ],
                   ),

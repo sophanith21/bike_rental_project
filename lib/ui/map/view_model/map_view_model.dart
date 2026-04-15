@@ -2,6 +2,7 @@ import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_reposi
 import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
 import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/model/bike/bike_station.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:flutter/material.dart';
 
 class MapViewModel extends ChangeNotifier {
@@ -24,8 +25,8 @@ class MapViewModel extends ChangeNotifier {
 
   // station
   List<BikeStation> allBikeStations = [];
-  List<BikeStation> filteredStations = [];
   BikeStation? selectedStation;
+  AsyncValue<List<BikeStation>>? stationsState;
 
   // controller
   final TextEditingController searchController = TextEditingController();
@@ -46,9 +47,9 @@ class MapViewModel extends ChangeNotifier {
       .toList();
 
   Future<void> loadBikeStations() async {
-    isLoading = true;
-    notifyListeners();
     try {
+      stationsState = AsyncValue.loading();
+      notifyListeners();
       final List<BikeStation> bikeStations = await bikeStationRepository
           .getBikeStations();
       final List<BikeSlot> bikeSlots = await bikeSlotRepository.getBikeSlots();
@@ -56,18 +57,21 @@ class MapViewModel extends ChangeNotifier {
       stationsById = {for (var s in bikeStations) s.id: s};
       bikeSlotsById = {for (var b in bikeSlots) b.id: b};
 
-      filteredStations = stationsWithStatus(bikeSlotStatus);
+      final List<BikeStation> filteredStations = stationsWithStatus(
+        bikeSlotStatus,
+      );
+      stationsState = AsyncValue.success(filteredStations);
     } catch (e) {
+      stationsState = AsyncValue.error(e);
       print(e);
     }
-
-    isLoading = false;
     notifyListeners();
   }
 
   void clearSearch() {
     searchController.clear();
-    filteredStations = stationsWithStatus(bikeSlotStatus);
+    final List<BikeStation> source = stationsWithStatus(bikeSlotStatus);
+    stationsState = AsyncValue.success(source);
     print("Clear search");
     notifyListeners();
   }
@@ -81,15 +85,16 @@ class MapViewModel extends ChangeNotifier {
   void onSearch(String query) {
     final source = stationsWithStatus(bikeSlotStatus);
     if (query.isEmpty) {
-      filteredStations = source;
+      stationsState = AsyncValue.success(source);
     } else {
-      filteredStations = source
+      final List<BikeStation> result = source
           .where(
             (s) => s.stationName.toLowerCase().trim().contains(
               query.toLowerCase().trim(),
             ),
           )
           .toList();
+      stationsState = AsyncValue.success(result);
     }
     notifyListeners();
   }
