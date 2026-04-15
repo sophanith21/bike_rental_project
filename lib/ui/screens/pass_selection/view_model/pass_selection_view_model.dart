@@ -2,7 +2,7 @@ import 'package:bike_rental_project/data/repositories/pass_subscription/pass_sub
 import 'package:bike_rental_project/model/booking/pass_subscription.dart';
 import 'package:bike_rental_project/model/user/user_pass.dart';
 import 'package:bike_rental_project/ui/states/user_state.dart';
-import 'package:bike_rental_project/ui/utils/async_value.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
 import 'package:bike_rental_project/ui/screens/pass_selection/view_model/pass_selection_view_model.dart';
 import 'package:bike_rental_project/ui/screens/payment/payment_screen.dart';
-import 'package:bike_rental_project/ui/utils/async_value.dart';
-import 'package:bike_rental_project/ui/utils/nav_util.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
+import 'package:bike_rental_project/utils/nav_util.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_filled_button.dart';
 import 'package:bike_rental_project/ui/widgets/pass_card.dart';
 import 'package:flutter/material.dart';

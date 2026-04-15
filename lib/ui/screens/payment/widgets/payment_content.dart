@@ -1,8 +1,8 @@
 import 'package:bike_rental_project/ui/my_app.dart';
 import 'package:bike_rental_project/ui/screens/payment/view_model/payment_view_model.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
-import 'package:bike_rental_project/ui/utils/async_value.dart';
-import 'package:bike_rental_project/ui/utils/nav_util.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
+import 'package:bike_rental_project/utils/nav_util.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_dialog.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_filled_button.dart';
 import 'package:bike_rental_project/ui/widgets/pass_card.dart';

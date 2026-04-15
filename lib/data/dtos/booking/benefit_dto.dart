@@ -1,5 +1,5 @@
 import 'package:bike_rental_project/model/booking/benefit.dart';
-import 'package:bike_rental_project/ui/utils/icon_dictionary.dart';
+import 'package:bike_rental_project/utils/icon_dictionary.dart';
 
 class BenefitDto {
   static const String iconDataKey = 'iconData';
