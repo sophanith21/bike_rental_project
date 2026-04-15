@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'bike-rental-project-3d4e6.firebasestorage.app',
     measurementId: 'G-3935XYNQLT',
   );
+
 }
