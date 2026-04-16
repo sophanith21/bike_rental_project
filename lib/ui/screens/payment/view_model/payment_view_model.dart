@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class PaymentViewModel extends ChangeNotifier {
   final PassSubscription selectedSubs;
-  final UserState userState;
+  UserState userState;
 
   PaymentViewModel({required this.selectedSubs, required this.userState});
 
@@ -23,7 +23,7 @@ class PaymentViewModel extends ChangeNotifier {
         passSubscriptionId: selectedSubs.id,
         userId: userState.user!.id,
       );
-      await userState.updateUserPass(confirmedPass);
+      await userState.createUserPass(confirmedPass);
       paymentStatus = AsyncValue.success(true);
     } catch (err) {
       paymentStatus = AsyncValue.error(err);

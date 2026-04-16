@@ -11,11 +11,23 @@ class PaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProxyProvider<UserState, PaymentViewModel>(
       create: (context) => PaymentViewModel(
         selectedSubs: selectedSubs,
         userState: context.read<UserState>(),
       ),
+      update:
+          (BuildContext context, UserState value, PaymentViewModel? previous) {
+            if (previous != null) {
+              previous.userState = value;
+              return previous;
+            }
+
+            return PaymentViewModel(
+              selectedSubs: selectedSubs,
+              userState: value,
+            );
+          },
       child: PaymentContent(),
     );
   }

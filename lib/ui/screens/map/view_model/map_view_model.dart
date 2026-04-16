@@ -2,6 +2,8 @@ import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_reposi
 import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
 import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/model/bike/bike_station.dart';
+import 'package:bike_rental_project/model/booking/booking.dart';
+import 'package:bike_rental_project/ui/states/user_state.dart';
 import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +11,13 @@ class MapViewModel extends ChangeNotifier {
   final BikeStationRepository bikeStationRepository;
   final BikeSlotRepository bikeSlotRepository;
   final BikeSlotStatus bikeSlotStatus;
+  UserState userState;
 
   MapViewModel({
     required this.bikeStationRepository,
     required this.bikeSlotStatus,
     required this.bikeSlotRepository,
+    required this.userState,
   }) {
     loadBikeStations();
   }
@@ -30,6 +34,8 @@ class MapViewModel extends ChangeNotifier {
 
   // controller
   final TextEditingController searchController = TextEditingController();
+
+  Booking? get booking => userState.booking;
 
   List<BikeSlot> slotsAt(String stationId) =>
       bikeSlotsById.values.where((s) => s.bikeStationId == stationId).toList();
@@ -97,6 +103,15 @@ class MapViewModel extends ChangeNotifier {
       stationsState = AsyncValue.success(result);
     }
     notifyListeners();
+  }
+
+  // Helper methods for when booking is active
+  BikeStation? findBikeStation(String stationId) {
+    return stationsById[stationId];
+  }
+
+  BikeSlot? findBikeSlot(String slotId) {
+    return bikeSlotsById[slotId];
   }
 
   void selectStation(BikeStation? station) {

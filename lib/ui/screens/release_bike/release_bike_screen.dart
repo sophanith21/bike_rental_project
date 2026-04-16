@@ -17,12 +17,28 @@ class ReleaseBikeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProxyProvider<UserState, ReleaseBikeViewModel>(
       create: (context) => ReleaseBikeViewModel(
         selectedBikeSlot: slot,
         selectedStation: station,
         userState: context.read<UserState>(),
       ),
+      update:
+          (
+            BuildContext context,
+            UserState value,
+            ReleaseBikeViewModel? previous,
+          ) {
+            if (previous != null) {
+              previous.userState = value;
+              return previous;
+            }
+            return ReleaseBikeViewModel(
+              selectedBikeSlot: slot,
+              selectedStation: station,
+              userState: value,
+            );
+          },
       child: ReleaseBikeContent(),
     );
   }

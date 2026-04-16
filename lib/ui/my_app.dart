@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
           valueListenable: NavUtil.tabIndex,
           builder: (BuildContext context, value, Widget? child) {
             return Scaffold(
+              backgroundColor: AppTheme.bgColor,
               appBar: AppBar(
                 title: Row(
                   mainAxisSize: MainAxisSize.min,

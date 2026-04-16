@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserPassRepositoryMock implements UserPassRepository {
-  final List<UserPass> _userPassList = SeedData.userPasses;
+  final List<UserPass> _userPassList = [...SeedData.userPasses];
 
   final BehaviorSubject<UserPass?> _activePassSubject =
       BehaviorSubject<UserPass?>();

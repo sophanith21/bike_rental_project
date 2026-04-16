@@ -1,6 +1,5 @@
 import 'package:bike_rental_project/data/dtos/bike/bike_slot_dto.dart';
 import 'package:bike_rental_project/data/dtos/bike/bike_station_dto.dart';
-import 'package:bike_rental_project/data/dtos/booking/booking_dto.dart';
 import 'package:bike_rental_project/data/dtos/booking/pass_subscription_dto.dart';
 import 'package:bike_rental_project/data/dtos/user/user_dto.dart';
 import 'package:bike_rental_project/data/dtos/user/user_pass_dto.dart';
@@ -8,8 +7,6 @@ import 'package:bike_rental_project/firebase_options.dart';
 import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/model/bike/bike_station.dart';
 import 'package:bike_rental_project/model/booking/benefit.dart';
-import 'package:bike_rental_project/model/booking/booking.dart';
-import 'package:bike_rental_project/model/booking/booking_method.dart';
 import 'package:bike_rental_project/model/booking/pass_subscription.dart';
 import 'package:bike_rental_project/model/user/user.dart';
 import 'package:bike_rental_project/model/user/user_pass.dart';
@@ -47,7 +44,6 @@ class SeedData {
     await seedUserPasses();
     await seedBikeStations();
     await seedBikeSlots();
-    await seedBookings();
 
     print('\n🎉 All mock data seeded successfully!');
   }
@@ -115,17 +111,6 @@ class SeedData {
       print(
         '🚲 Added slot: ${slot.id} at station ${slot.bikeStationId} (${slot.bikeSlotStatus.name})',
       );
-    }
-  }
-
-  // Bookings
-  static Future<void> seedBookings() async {
-    for (final booking in bookings) {
-      await _db
-          .collection(bookingsCollection)
-          .doc(booking.id)
-          .set(BookingDto.toJson(booking));
-      print('📋 Added booking: ${booking.id} (${booking.bookingStatus.name})');
     }
   }
 
@@ -473,48 +458,6 @@ class SeedData {
       slotNumber: 9,
       bikeStationId: 'station_004',
       bikeSlotStatus: BikeSlotStatus.occupied,
-    ),
-  ];
-
-  static final bookings = [
-    Booking(
-      id: 'booking_001',
-      userId: 'user_001',
-      bikeSlotId: 'slot_001',
-      createdAt: now.subtract(const Duration(hours: 2)),
-      bookingStatus: BookingStatus.ongoing,
-      bookingMethod: BookingMethod(
-        passId: 'user_pass_001',
-        rentDate: now.subtract(const Duration(hours: 2)).toIso8601String(),
-        price: 0.00,
-        bookingType: BookingType.pass,
-      ),
-    ),
-    Booking(
-      id: 'booking_002',
-      userId: 'user_002',
-      bikeSlotId: 'slot_003',
-      createdAt: now.subtract(const Duration(days: 1)),
-      bookingStatus: BookingStatus.complete,
-      bookingMethod: BookingMethod(
-        passId: '',
-        rentDate: now.subtract(const Duration(days: 1)).toIso8601String(),
-        price: 2.50,
-        bookingType: BookingType.oneTime,
-      ),
-    ),
-    Booking(
-      id: 'booking_003',
-      userId: 'user_003',
-      bikeSlotId: 'slot_005',
-      createdAt: now.subtract(const Duration(hours: 5)),
-      bookingStatus: BookingStatus.ongoing,
-      bookingMethod: BookingMethod(
-        passId: 'user_pass_003',
-        rentDate: now.subtract(const Duration(hours: 5)).toIso8601String(),
-        price: 0.00,
-        bookingType: BookingType.pass,
-      ),
     ),
   ];
 }

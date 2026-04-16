@@ -75,11 +75,6 @@ class StationDetailsPanel extends StatelessWidget {
                 size: 50,
                 color: AppTheme.primary,
               ),
-
-              IconButton(
-                onPressed: onDeselect,
-                icon: Icon(Icons.cancel_outlined, color: AppTheme.primary),
-              ),
             ],
           ),
           const Divider(height: 40, color: AppTheme.primary, thickness: 2),

@@ -2,6 +2,8 @@ import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_mock_r
 import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_repository.dart';
 import 'package:bike_rental_project/data/repositories/bike_station/bike_station_mock_repository.dart';
 import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
+import 'package:bike_rental_project/data/repositories/booking/booking_repository.dart';
+import 'package:bike_rental_project/data/repositories/booking/booking_repository_mock.dart';
 import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository.dart';
 import 'package:bike_rental_project/data/repositories/pass_subscription/pass_subscription_repository_mock.dart';
 import 'package:bike_rental_project/data/repositories/user/user_repository.dart';
@@ -23,14 +25,21 @@ List<SingleChildWidget> dependency = [
   Provider<UserRepository>(create: (context) => UserRepositoryMock()),
   Provider<UserPassRepository>(create: (context) => UserPassRepositoryMock()),
   Provider<BikeSlotRepository>(create: (context) => BikeSlotMockRepository()),
+  Provider<BookingRepository>(create: (context) => BookingRepositoryMock()),
   Provider<BikeStationRepository>(
     create: (context) => BikeStationMockRepository(),
   ),
-  ChangeNotifierProxyProvider2<UserPassRepository, UserRepository, UserState>(
+  ChangeNotifierProxyProvider3<
+    UserPassRepository,
+    UserRepository,
+    BookingRepository,
+    UserState
+  >(
     create: (BuildContext context) {
       return UserState(
         userPassRepository: context.read<UserPassRepository>(),
         userRepository: context.read<UserRepository>(),
+        bookingRepository: context.read<BookingRepository>(),
       );
     },
     update:
@@ -38,9 +47,15 @@ List<SingleChildWidget> dependency = [
           BuildContext context,
           UserPassRepository value,
           UserRepository value2,
+          BookingRepository value3,
           UserState? previous,
         ) {
-          return UserState(userPassRepository: value, userRepository: value2);
+          if (previous != null) return previous;
+          return UserState(
+            userPassRepository: value,
+            userRepository: value2,
+            bookingRepository: value3,
+          );
         },
   ),
 ];

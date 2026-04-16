@@ -2,8 +2,10 @@ import 'package:bike_rental_project/ui/my_app.dart';
 import 'package:bike_rental_project/ui/screens/pass_selection/pass_selection_screen.dart';
 import 'package:bike_rental_project/ui/screens/release_bike/view_model/release_bike_view_model.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
+import 'package:bike_rental_project/ui/widgets/bike_rental_dialog.dart';
 import 'package:bike_rental_project/ui/widgets/bike_rental_filled_button.dart';
 import 'package:bike_rental_project/ui/widgets/ticket/ticket_widget_horizontal.dart';
+import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:bike_rental_project/utils/nav_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -138,7 +140,7 @@ class _ReleaseBikeContentState extends State<ReleaseBikeContent> {
                         ),
                       ),
                       Text(
-                        "End Date: ${DateFormat(formattedDate).format(vm.userPass!.expirationDate)}",
+                        "End Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(vm.userPass!.expirationDate.toLocal())}",
                         style: AppTheme.bodySmall,
                       ),
                     ],
@@ -153,44 +155,50 @@ class _ReleaseBikeContentState extends State<ReleaseBikeContent> {
               ),
             const SizedBox(height: 15),
             // Bottom Section: Policy and Payment
-            Row(
-              spacing: 12,
-              children: [
-                IconButton(
-                  onPressed: () => setState(() {
-                    termServiceAgreed = !termServiceAgreed;
-                  }),
-                  icon: Icon(
-                    termServiceAgreed
-                        ? Symbols.check_box
-                        : Symbols.check_box_outline_blank,
-                    fill: 1,
-                    size: 21,
-                    color: AppTheme.primary,
+            if (!vm.isBookingTheSlot)
+              Row(
+                spacing: 12,
+                children: [
+                  IconButton(
+                    onPressed: () => setState(() {
+                      termServiceAgreed = !termServiceAgreed;
+                    }),
+                    icon: Icon(
+                      termServiceAgreed
+                          ? Symbols.check_box
+                          : Symbols.check_box_outline_blank,
+                      fill: 1,
+                      size: 21,
+                      color: AppTheme.primary,
+                    ),
                   ),
-                ),
-                Text(
-                  "I agree to the Terms of Service and Privacy Policy",
-                  style: AppTheme.bodySmall.copyWith(
-                    color: AppTheme.secondary,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    "I agree to the Terms of Service and Privacy Policy",
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             const SizedBox(height: 15),
-            Text(
-              "Includes first 30 mins. Then \$0.49 per 30 mins.",
-              style: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.bold),
-            ),
+            if (!vm.isBookingTheSlot)
+              Text(
+                "Includes first 30 mins. Then \$0.49 per 30 mins.",
+                style: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.bold),
+              ),
             const SizedBox(height: 15),
-            BikeRentalButton(
-              label: vm.payLabel,
-              onPressed: termServiceAgreed ? () {} : null,
-            ),
+            (vm.isBookingTheSlot)
+                ? BikeRentalButton(label: vm.payLabel, onPressed: onBikeRelease)
+                : BikeRentalButton(
+                    label: vm.payLabel,
+                    onPressed: termServiceAgreed && !vm.hasBookedAlready
+                        ? onBookBike
+                        : null,
+                  ),
 
             const SizedBox(height: 15),
-            if (!vm.isSubscriptionActive)
+            if (!vm.isSubscriptionActive && !vm.hasBookedAlready)
               BikeRentalButton(
                 isFilled: false,
                 label: "Find Subscriptions",
@@ -201,6 +209,92 @@ class _ReleaseBikeContentState extends State<ReleaseBikeContent> {
         ),
       ),
     );
+  }
+
+  Future<void> onBikeRelease() async {
+    final vm = context.read<ReleaseBikeViewModel>();
+    await vm.releaseBike();
+    if (vm.releaseBikeStatus != null && mounted) {
+      switch (vm.releaseBikeStatus!.state) {
+        case AsyncValueState.loading:
+          break;
+        case AsyncValueState.error:
+          showDialog(
+            context: context,
+            builder: (context) => BikeRentalDialog(
+              title: "Release Bike Error!",
+              description: vm.releaseBikeStatus!.error.toString(),
+            ),
+          );
+          break;
+        case AsyncValueState.success:
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => BikeRentalDialog(
+              title: "Bike Released",
+              description: "Thank you for using our services.",
+              action: BikeRentalButton(
+                label: "Check Map",
+                onPressed: () {
+                  NavUtil.toHome(ScreenNavigation.map);
+                },
+              ),
+            ),
+          );
+          break;
+      }
+    }
+  }
+
+  Future<void> onBookBike() async {
+    final vm = context.read<ReleaseBikeViewModel>();
+    await vm.onBikeBooked();
+    if (vm.bookingProcessStatus != null && mounted) {
+      switch (vm.bookingProcessStatus!.state) {
+        case AsyncValueState.loading:
+          break;
+        case AsyncValueState.error:
+          showDialog(
+            context: context,
+            builder: (context) => BikeRentalDialog(
+              title: "Payment Error!",
+              description: vm.bookingProcessStatus!.error.toString(),
+            ),
+          );
+          break;
+        case AsyncValueState.success:
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => BikeRentalDialog(
+              title: "Payment Complete",
+              description: "Thank you for using our services.",
+              action: Column(
+                spacing: 15,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BikeRentalButton(
+                    label: "Release the bike",
+                    onPressed: () {
+                      NavUtil.back();
+                      onBikeRelease();
+                    },
+                  ),
+                  BikeRentalButton(
+                    label: "Check Map",
+                    isFilled: false,
+                    onPressed: () {
+                      NavUtil.toHome(ScreenNavigation.map);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+          break;
+      }
+    }
   }
 
   void onFindSubscriptions() {
