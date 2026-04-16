@@ -22,6 +22,11 @@ class ReleaseBikeViewModel extends ChangeNotifier {
   AsyncValue<bool>? bookingProcessStatus;
   AsyncValue<bool>? releaseBikeStatus;
 
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
+  }
+
   UserPass? get userPass => userState.userPass;
 
   bool get isSubscriptionActive {

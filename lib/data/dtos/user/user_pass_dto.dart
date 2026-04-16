@@ -6,12 +6,15 @@ class UserPassDto {
   static const String passSubscriptionIdKey = 'passSubscriptionId';
   static const String startDateKey = 'startDate';
   static const String expirationDateKey = 'expirationDate';
+  static const String passNameKey = 'passName';
 
   static UserPass fromJson(String id, Map<String, dynamic> json) {
     assert(json[userIdKey] is String);
     assert(json[passSubscriptionIdKey] is String);
     assert(json[startDateKey] is Timestamp);
     assert(json[expirationDateKey] is Timestamp);
+    assert(json[expirationDateKey] is Timestamp);
+    assert(json[passNameKey] is String);
 
     return UserPass(
       id: id,
@@ -19,6 +22,7 @@ class UserPassDto {
       passSubscriptionId: json[passSubscriptionIdKey],
       startDate: (json[startDateKey] as Timestamp).toDate(),
       expirationDate: (json[expirationDateKey] as Timestamp).toDate(),
+      passName: json[passNameKey],
     );
   }
 
@@ -28,6 +32,7 @@ class UserPassDto {
       passSubscriptionIdKey: userPass.passSubscriptionId,
       startDateKey: Timestamp.fromDate(userPass.startDate),
       expirationDateKey: Timestamp.fromDate(userPass.expirationDate),
+      passNameKey: userPass.passName,
     };
   }
 }

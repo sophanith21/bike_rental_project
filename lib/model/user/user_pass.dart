@@ -4,6 +4,7 @@ class UserPass {
   final String id;
   final String userId;
   final String passSubscriptionId;
+  final String passName;
   final DateTime startDate;
   final DateTime expirationDate;
 
@@ -13,6 +14,7 @@ class UserPass {
     required this.expirationDate,
     required this.passSubscriptionId,
     required this.userId,
+    required this.passName,
   });
 
   PassStatus get passStatus => DateTime.now().isBefore(expirationDate)
@@ -26,6 +28,7 @@ class UserPass {
           runtimeType == other.runtimeType &&
           id == other.id &&
           userId == other.userId &&
+          passName == other.passName &&
           passSubscriptionId == other.passSubscriptionId &&
           startDate == other.startDate &&
           expirationDate == other.expirationDate &&
@@ -37,12 +40,13 @@ class UserPass {
     userId,
     passSubscriptionId,
     startDate,
+    passName,
     expirationDate,
     passStatus,
   );
 
   @override
   String toString() {
-    return 'UserPass(id: $id, userId: $userId, subscriptionId: $passSubscriptionId, start: $startDate, expires: $expirationDate)';
+    return 'UserPass(id: $id, passName: $passName, userId: $userId, subscriptionId: $passSubscriptionId, start: $startDate, expires: $expirationDate)';
   }
 }

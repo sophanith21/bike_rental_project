@@ -19,7 +19,8 @@ class PaymentScreen extends StatelessWidget {
       update:
           (BuildContext context, UserState value, PaymentViewModel? previous) {
             if (previous != null) {
-              previous.userState = value;
+              previous.updateUserState(value);
+
               return previous;
             }
 

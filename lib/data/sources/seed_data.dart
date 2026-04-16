@@ -192,6 +192,7 @@ class SeedData {
       passSubscriptionId: 'pass_sub_002',
       startDate: now,
       expirationDate: now.add(const Duration(days: 7)),
+      passName: 'Monthly Habit',
     ),
     UserPass(
       id: 'user_pass_002',
@@ -199,6 +200,7 @@ class SeedData {
       passSubscriptionId: 'pass_sub_003',
       startDate: now.subtract(const Duration(days: 35)),
       expirationDate: now.subtract(const Duration(days: 5)),
+      passName: 'Annual Member',
     ),
     UserPass(
       id: 'user_pass_003',
@@ -206,6 +208,7 @@ class SeedData {
       passSubscriptionId: 'pass_sub_001',
       startDate: now,
       expirationDate: now.add(const Duration(days: 1)),
+      passName: 'Daily Explorer',
     ),
   ];
 

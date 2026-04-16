@@ -16,6 +16,10 @@ class PassSelectionViewModel extends ChangeNotifier {
   }) {
     init();
   }
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
+  }
 
   void init() async {
     try {

@@ -30,7 +30,8 @@ class ReleaseBikeScreen extends StatelessWidget {
             ReleaseBikeViewModel? previous,
           ) {
             if (previous != null) {
-              previous.userState = value;
+              previous.updateUserState(value);
+
               return previous;
             }
             return ReleaseBikeViewModel(

@@ -20,7 +20,7 @@ class MapScreen extends StatelessWidget {
       ),
       update: (BuildContext context, UserState value, MapViewModel? previous) {
         if (previous != null) {
-          previous.userState = value;
+          previous.updateUserState(value);
           return previous;
         }
         return MapViewModel(

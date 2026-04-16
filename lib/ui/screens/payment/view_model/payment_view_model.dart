@@ -10,6 +10,10 @@ class PaymentViewModel extends ChangeNotifier {
   UserState userState;
 
   PaymentViewModel({required this.selectedSubs, required this.userState});
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
+  }
 
   AsyncValue<bool>? paymentStatus;
   Future<void> confirmPayment() async {
@@ -22,6 +26,7 @@ class PaymentViewModel extends ChangeNotifier {
         expirationDate: DateTime.now().add(selectedSubs.validDuration),
         passSubscriptionId: selectedSubs.id,
         userId: userState.user!.id,
+        passName: selectedSubs.title,
       );
       await userState.createUserPass(confirmedPass);
       paymentStatus = AsyncValue.success(true);

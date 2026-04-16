@@ -22,6 +22,7 @@ class TicketWidget extends StatelessWidget {
         borderRadius: AppTheme.brMedium,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         spacing: 20,
         children: [
           Padding(

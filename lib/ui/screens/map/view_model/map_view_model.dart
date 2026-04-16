@@ -21,6 +21,10 @@ class MapViewModel extends ChangeNotifier {
   }) {
     loadBikeStations();
   }
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
+  }
 
   bool isLoading = false;
   //join

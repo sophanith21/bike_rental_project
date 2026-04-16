@@ -17,7 +17,8 @@ class PassSelectionScreen extends StatelessWidget {
     >(
       update: (context, value, value2, previous) {
         if (previous != null) {
-          previous.userState = value;
+          previous.updateUserState(value);
+
           return previous;
         }
         return PassSelectionViewModel(
