@@ -1,4 +1,4 @@
-import 'package:bike_rental_project/ui/map/map_screen.dart';
+import 'package:bike_rental_project/ui/screens/map/map_screen.dart';
 import 'package:bike_rental_project/ui/screens/pass_selection/pass_selection_screen.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/utils/nav_util.dart';

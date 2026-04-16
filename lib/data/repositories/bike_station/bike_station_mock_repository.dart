@@ -98,20 +98,24 @@ final List<BikeStation> mockBikeStations = [
     id: 'station_001',
     stationName: 'Wat Phnom Station',
     stationLocation: LatLng(11.5765, 104.9214),
+    bikeRentPrice: 2.0,
   ),
   BikeStation(
     id: 'station_002',
     stationName: 'Riverside Station',
     stationLocation: LatLng(11.5694, 104.9301),
+    bikeRentPrice: 2.0,
   ),
   BikeStation(
     id: 'station_003',
     stationName: 'Central Market Station',
     stationLocation: LatLng(11.5637, 104.9225),
+    bikeRentPrice: 2.0,
   ),
   BikeStation(
     id: 'station_004',
     stationName: 'Olympic Stadium Station',
     stationLocation: LatLng(11.5556, 104.9228),
+    bikeRentPrice: 2.0,
   ),
 ];

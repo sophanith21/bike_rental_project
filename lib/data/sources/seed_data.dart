@@ -229,21 +229,25 @@ class SeedData {
       id: 'station_001',
       stationName: 'Central Market Station',
       stationLocation: const LatLng(11.5693, 104.9225),
+      bikeRentPrice: 2.0,
     ),
     BikeStation(
       id: 'station_002',
       stationName: 'Royal Palace Station',
       stationLocation: const LatLng(11.5625, 104.9306),
+      bikeRentPrice: 2.0,
     ),
     BikeStation(
       id: 'station_003',
       stationName: 'Riverside Station',
       stationLocation: const LatLng(11.5714, 104.9306),
+      bikeRentPrice: 2.0,
     ),
     BikeStation(
       id: 'station_004',
       stationName: 'Toul Sleng Station',
       stationLocation: const LatLng(11.5496, 104.9172),
+      bikeRentPrice: 2.0,
     ),
   ];
 

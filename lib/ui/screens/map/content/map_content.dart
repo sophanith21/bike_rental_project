@@ -1,7 +1,8 @@
 import 'package:bike_rental_project/model/bike/bike_station.dart';
-import 'package:bike_rental_project/ui/map/widgets/location_marker.dart';
-import 'package:bike_rental_project/ui/map/view_model/map_view_model.dart';
-import 'package:bike_rental_project/ui/map/widgets/station_panel.dart';
+import 'package:bike_rental_project/ui/screens/map/widgets/location_marker.dart';
+import 'package:bike_rental_project/ui/screens/map/view_model/map_view_model.dart';
+import 'package:bike_rental_project/ui/screens/map/widgets/station_panel.dart';
+import 'package:bike_rental_project/ui/screens/release_bike/release_bike_screen.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:flutter/material.dart';
@@ -105,8 +106,16 @@ class MapContent extends StatelessWidget {
                     mapVm.bikeSlotStatus,
                   ),
                   onDeselect: mapVm.clearSelection,
-                  onBooked: () {
-                    //todo go to book on this specific slot
+                  onBooked: (slot) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReleaseBikeScreen(
+                          slot: slot,
+                          station: mapVm.selectedStation!,
+                        ),
+                      ),
+                    );
                   },
                   status: mapVm.bikeSlotStatus,
                   station: mapVm.selectedStation!,

@@ -1,6 +1,7 @@
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
-import 'package:bike_rental_project/ui/widgets/ticket/dashed_line_painter.dart';
+
 import 'package:bike_rental_project/ui/widgets/ticket/half_clipper.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 
 class TicketWidget extends StatelessWidget {
@@ -47,12 +48,9 @@ class TicketWidget extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: CustomPaint(
-                  size: Size(double.infinity, 1),
-                  painter: DashedLinePainter(
-                    color: AppTheme.primary,
-                    strokeWidth: 2,
-                  ),
+                child: DottedLine(
+                  dashColor: AppTheme.primary,
+                  lineThickness: 2,
                 ),
               ),
               Align(
