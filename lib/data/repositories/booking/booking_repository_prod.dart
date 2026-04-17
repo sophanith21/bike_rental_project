@@ -72,8 +72,31 @@ class BookingRepositoryProd implements BookingRepository {
     String bookingId,
     BookingStatus newStatus,
   ) async {
-    await _bookingsCollection.doc(bookingId).update({
-      'bookingStatus': newStatus.name,
+    final bookingRef = _bookingsCollection.doc(bookingId);
+
+    await _firestore.runTransaction((transaction) async {
+      final bookingSnapshot = await transaction.get(bookingRef);
+
+      if (!bookingSnapshot.exists) {
+        throw Exception("Booking not found");
+      }
+
+      final bookingData = bookingSnapshot.data() as Map<String, dynamic>;
+      final slotId = bookingData['bikeSlotId'];
+
+      final slotRef = _firestore.collection('bike_slots').doc(slotId);
+
+      transaction.update(bookingRef, {'bookingStatus': newStatus.name});
+
+      if (newStatus == BookingStatus.complete) {
+        transaction.update(slotRef, {
+          BikeSlotDto.bikeSlotStatusKey: BikeSlotStatus.empty.name,
+        });
+      } else if (newStatus == BookingStatus.ongoing) {
+        transaction.update(slotRef, {
+          BikeSlotDto.bikeSlotStatusKey: BikeSlotStatus.booked.name,
+        });
+      }
     });
   }
 }
