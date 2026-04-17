@@ -14,7 +14,9 @@ import 'package:latlong2/latlong.dart';
 class MapViewModel extends ChangeNotifier {
   final BikeStationRepository bikeStationRepository;
   final BikeSlotRepository bikeSlotRepository;
-  // final BikeSlotStatus bikeSlotStatus;
+
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
   UserState userState;
 
   MapViewModel({

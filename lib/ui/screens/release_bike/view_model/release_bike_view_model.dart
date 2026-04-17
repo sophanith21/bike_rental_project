@@ -103,7 +103,7 @@ class ReleaseBikeViewModel extends ChangeNotifier {
       notifyListeners();
 
       await userState.updateBookingStatus(
-        userState.booking!.id,
+        userState.booking!,
         BookingStatus.complete,
       );
       userState.isRelease = true;
