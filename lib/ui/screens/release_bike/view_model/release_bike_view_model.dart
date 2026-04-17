@@ -106,6 +106,7 @@ class ReleaseBikeViewModel extends ChangeNotifier {
         userState.booking!.id,
         BookingStatus.complete,
       );
+      userState.isRelease = true;
       releaseBikeStatus = AsyncValue.success(true);
     } catch (err) {
       releaseBikeStatus = AsyncValue.error(err);

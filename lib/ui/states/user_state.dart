@@ -14,6 +14,7 @@ class UserState extends ChangeNotifier {
 
   final UserRepository userRepository;
   bool isDisposed = false;
+  bool isRelease = false;
 
   Booking? booking;
 

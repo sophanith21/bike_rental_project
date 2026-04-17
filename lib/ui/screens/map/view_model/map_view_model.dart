@@ -36,6 +36,7 @@ class MapViewModel extends ChangeNotifier {
   void onUserStateChanged() {
     print('UserState changed — booking: ${userState.booking?.bookingStatus}');
     print('bikeSlotStatus: $bikeSlotStatus');
+    notifyListeners();
     loadBikeStations();
   }
 
@@ -54,9 +55,7 @@ class MapViewModel extends ChangeNotifier {
 
   Booking? get booking => userState.booking;
   BikeSlotStatus get bikeSlotStatus =>
-      booking?.bookingStatus == BookingStatus.complete
-      ? BikeSlotStatus.empty
-      : BikeSlotStatus.occupied;
+      userState.isRelease ? BikeSlotStatus.empty : BikeSlotStatus.occupied;
 
   List<BikeSlot> slotsAt(String stationId) =>
       bikeSlotsById.values.where((s) => s.bikeStationId == stationId).toList();
