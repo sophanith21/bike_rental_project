@@ -27,7 +27,7 @@ class BookingRepositoryMock implements BookingRepository {
     }
     await bikeSlotRepository.updateBikeSlotStatus(
       newBook.bikeSlotId,
-      BikeSlotStatus.occupied,
+      BikeSlotStatus.booked,
     );
     _allBookingsSubject.add([...currentList, newBook]);
   }
@@ -43,16 +43,22 @@ class BookingRepositoryMock implements BookingRepository {
 
   @override
   Future<void> updateBookingStatus(
-    String bookingId,
+    Booking booking,
     BookingStatus newStatus,
   ) async {
     final currentList = _allBookingsSubject.value;
-    int targetUpdateIndex = currentList.indexWhere((e) => e.id == bookingId);
+    int targetUpdateIndex = currentList.indexWhere((e) => e.id == booking.id);
 
     if (targetUpdateIndex != -1) {
       currentList[targetUpdateIndex] = currentList[targetUpdateIndex].copyWith(
         bookingStatus: newStatus,
       );
+      if (newStatus == BookingStatus.complete) {
+        await bikeSlotRepository.updateBikeSlotStatus(
+          booking.bikeSlotId,
+          BikeSlotStatus.empty,
+        );
+      }
       _allBookingsSubject.add([...currentList]);
     } else {
       throw Exception(

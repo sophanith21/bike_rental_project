@@ -69,10 +69,10 @@ class BookingRepositoryProd implements BookingRepository {
 
   @override
   Future<void> updateBookingStatus(
-    String bookingId,
+    Booking booking,
     BookingStatus newStatus,
   ) async {
-    final bookingRef = _bookingsCollection.doc(bookingId);
+    final bookingRef = _bookingsCollection.doc(booking.id);
 
     await _firestore.runTransaction((transaction) async {
       final bookingSnapshot = await transaction.get(bookingRef);

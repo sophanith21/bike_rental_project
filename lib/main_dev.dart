@@ -27,7 +27,7 @@ List<SingleChildWidget> dependency = [
   Provider<BikeSlotRepository>(create: (context) => BikeSlotMockRepository()),
   Provider<BookingRepository>(
     create: (context) => BookingRepositoryMock(
-      bikeSlotRepository: context.read<BikeSlotMockRepository>(),
+      bikeSlotRepository: context.read<BikeSlotRepository>(),
     ),
   ),
   Provider<BikeStationRepository>(

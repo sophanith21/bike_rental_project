@@ -10,7 +10,7 @@ class BikeStationMockRepository implements BikeStationRepository {
   }
 }
 
-final List<BikeSlot> mockBikeSlots = [
+List<BikeSlot> mockBikeSlots = [
   // Station 001 Slots
   BikeSlot(
     id: 'slot_001',

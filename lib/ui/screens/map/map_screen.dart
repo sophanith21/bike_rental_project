@@ -1,6 +1,5 @@
 import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_repository.dart';
 import 'package:bike_rental_project/data/repositories/bike_station/bike_station_repository.dart';
-import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/ui/screens/map/content/map_content.dart';
 import 'package:bike_rental_project/ui/screens/map/view_model/map_view_model.dart';
 import 'package:bike_rental_project/ui/states/user_state.dart';
@@ -21,6 +20,7 @@ class MapScreen extends StatelessWidget {
       update: (BuildContext context, UserState value, MapViewModel? previous) {
         if (previous != null) {
           previous.updateUserState(value);
+          previous.loadBikeStations();
           return previous;
         }
         return MapViewModel(

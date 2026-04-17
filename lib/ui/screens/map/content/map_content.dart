@@ -4,6 +4,7 @@ import 'package:bike_rental_project/ui/screens/map/widgets/location_marker.dart'
 import 'package:bike_rental_project/ui/screens/map/view_model/map_view_model.dart';
 import 'package:bike_rental_project/ui/screens/map/widgets/station_panel.dart';
 import 'package:bike_rental_project/ui/screens/release_bike/release_bike_screen.dart';
+import 'package:bike_rental_project/ui/screens/return_bike/return_bike_screen.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/utils/async_value.dart';
 import 'package:bike_rental_project/utils/nav_util.dart';
@@ -226,6 +227,7 @@ class MapContent extends StatelessWidget {
 
           if (mapVm.selectedStation != null)
             DraggableScrollableSheet(
+              controller: mapVm.sheetController,
               initialChildSize: 0.37,
               minChildSize: 0.1,
               maxChildSize: 1,
@@ -255,10 +257,16 @@ class MapContent extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ReleaseBikeScreen(
-                            slot: slot,
-                            station: mapVm.selectedStation!,
-                          ),
+                          builder: (context) =>
+                              slot.bikeSlotStatus == BikeSlotStatus.occupied
+                              ? ReleaseBikeScreen(
+                                  slot: slot,
+                                  station: mapVm.selectedStation!,
+                                )
+                              : ReturnBikeScreen(
+                                  slot: slot,
+                                  station: mapVm.selectedStation!,
+                                ),
                         ),
                       );
                     },

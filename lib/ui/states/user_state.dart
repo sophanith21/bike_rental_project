@@ -14,7 +14,14 @@ class UserState extends ChangeNotifier {
 
   final UserRepository userRepository;
   bool isDisposed = false;
-  bool isRelease = false;
+  bool _isRelease = false;
+  bool get isRelease => _isRelease;
+  set isRelease(bool val) {
+    if (_isRelease != val) {
+      _isRelease = val;
+      notifyListeners();
+    }
+  }
 
   Booking? booking;
 
@@ -85,7 +92,7 @@ class UserState extends ChangeNotifier {
 
   @override
   void dispose() {
-    print("DEBUG: UserState is being DISPOSED!");
+    debugPrint("DEBUG: UserState is being DISPOSED!");
     userPassStreamSubscription?.cancel();
     bookingStreamSubscription?.cancel();
     expirationTimer?.cancel();
@@ -117,9 +124,9 @@ class UserState extends ChangeNotifier {
   }
 
   Future<void> updateBookingStatus(
-    String bookingId,
+    Booking booking,
     BookingStatus newStatus,
   ) async {
-    await bookingRepository.updateBookingStatus(bookingId, newStatus);
+    await bookingRepository.updateBookingStatus(booking, newStatus);
   }
 }
