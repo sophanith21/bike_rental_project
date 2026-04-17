@@ -10,6 +10,9 @@ class StationDetailsPanel extends StatelessWidget {
   final VoidCallback onDeselect;
   final ValueChanged<BikeSlot> onBooked;
   final List<BikeSlot> bikeSlots;
+  final VoidCallback onDirection;
+  final VoidCallback onClearRoute;
+  final bool isDirection;
 
   const StationDetailsPanel({
     super.key,
@@ -19,6 +22,9 @@ class StationDetailsPanel extends StatelessWidget {
     required this.onDeselect,
     required this.bikeSlots,
     required this.onBooked,
+    required this.onDirection,
+    required this.isDirection,
+    required this.onClearRoute,
   });
 
   Color get colorStatus =>
@@ -59,6 +65,12 @@ class StationDetailsPanel extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Icon(
+              //   Icons.bike_scooter_rounded,
+              //   size: 50,
+              //   color: AppTheme.primary,
+              // ),
+              // const SizedBox(width: 20),
               Expanded(
                 child: Text(
                   station.stationName,
@@ -70,10 +82,25 @@ class StationDetailsPanel extends StatelessWidget {
                 ),
               ),
 
-              Icon(
-                Icons.bike_scooter_rounded,
-                size: 50,
-                color: AppTheme.primary,
+              isDirection
+                  ? IconButton(
+                      onPressed: onClearRoute,
+                      icon: Icon(
+                        Icons.near_me_disabled_rounded,
+                        color: AppTheme.primary,
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: onDirection,
+                      icon: Icon(
+                        Icons.near_me_rounded,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+
+              IconButton(
+                onPressed: onDeselect,
+                icon: Icon(Icons.cancel_outlined, color: AppTheme.primary),
               ),
             ],
           ),

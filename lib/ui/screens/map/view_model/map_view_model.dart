@@ -5,28 +5,40 @@ import 'package:bike_rental_project/model/bike/bike_station.dart';
 import 'package:bike_rental_project/model/booking/booking.dart';
 import 'package:bike_rental_project/ui/states/user_state.dart';
 import 'package:bike_rental_project/utils/async_value.dart';
+import 'package:bike_rental_project/utils/routing_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapViewModel extends ChangeNotifier {
   final BikeStationRepository bikeStationRepository;
   final BikeSlotRepository bikeSlotRepository;
-  final BikeSlotStatus bikeSlotStatus;
+  // final BikeSlotStatus bikeSlotStatus;
   UserState userState;
 
   MapViewModel({
     required this.bikeStationRepository,
-    required this.bikeSlotStatus,
+    // required this.bikeSlotStatus,
     required this.bikeSlotRepository,
     required this.userState,
   }) {
     loadBikeStations();
+    userState.addListener(onUserStateChanged);
   }
   void updateUserState(UserState newUserState) {
+    userState.removeListener(onUserStateChanged);
     userState = newUserState;
+    userState.addListener(onUserStateChanged);
     notifyListeners();
   }
 
-  bool isLoading = false;
+  void onUserStateChanged() {
+    print('UserState changed — booking: ${userState.booking?.bookingStatus}');
+    print('bikeSlotStatus: $bikeSlotStatus');
+    loadBikeStations();
+  }
+
   //join
   Map<String, BikeStation> stationsById = {};
   Map<String, BikeSlot> bikeSlotsById = {};
@@ -38,8 +50,13 @@ class MapViewModel extends ChangeNotifier {
 
   // controller
   final TextEditingController searchController = TextEditingController();
+  final MapController mapController = MapController();
 
   Booking? get booking => userState.booking;
+  BikeSlotStatus get bikeSlotStatus =>
+      booking?.bookingStatus == BookingStatus.complete
+      ? BikeSlotStatus.empty
+      : BikeSlotStatus.occupied;
 
   List<BikeSlot> slotsAt(String stationId) =>
       bikeSlotsById.values.where((s) => s.bikeStationId == stationId).toList();
@@ -78,6 +95,7 @@ class MapViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Search
   void clearSearch() {
     searchController.clear();
     final List<BikeStation> source = stationsWithStatus(bikeSlotStatus);
@@ -88,7 +106,9 @@ class MapViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    userState.removeListener(onUserStateChanged);
     searchController.dispose();
+    mapController.dispose();
     super.dispose();
   }
 
@@ -120,13 +140,88 @@ class MapViewModel extends ChangeNotifier {
 
   void selectStation(BikeStation? station) {
     selectedStation = station;
+    mapController.move(station!.stationLocation, 16);
     print("selected");
     notifyListeners();
   }
 
   void clearSelection() {
     selectedStation = null;
+    clearRoute();
     print("deselected");
+    notifyListeners();
+  }
+
+  // User Location
+  LatLng? userLocation;
+  AsyncValue<LatLng>? userLocationState;
+
+  Future<void> loadUserLocation() async {
+    try {
+      userLocationState = AsyncValue.loading();
+      notifyListeners();
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permission denied');
+        }
+      }
+
+      final position = await Geolocator.getCurrentPosition();
+      userLocation = LatLng(position.latitude, position.longitude);
+      mapController.move(userLocation!, 16);
+      userLocationState = AsyncValue.success(userLocation!);
+    } catch (e) {
+      userLocationState = AsyncValue.error(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> goToUserLocation() async {
+    if (userLocation == null) {
+      await loadUserLocation();
+    }
+    if (userLocation == null) return;
+    mapController.move(userLocation!, 16);
+
+    notifyListeners();
+  }
+
+  // Route
+  List<LatLng> routePoints = [];
+  AsyncValue<List<LatLng>>? routeState;
+
+  Future<void> loadRoute() async {
+    if (selectedStation == null) return;
+    if (userLocation == null) {
+      await loadUserLocation();
+    }
+    if (userLocation == null) return;
+
+    try {
+      routeState = AsyncValue.loading();
+      notifyListeners();
+
+      final points = await RoutingService.getRoute(
+        from: userLocation!,
+        to: selectedStation!.stationLocation,
+      );
+
+      routePoints = points;
+      routeState = AsyncValue.success(points);
+    } catch (e) {
+      routeState = AsyncValue.error(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  void clearRoute() {
+    routePoints = [];
+    routeState = null;
     notifyListeners();
   }
 }

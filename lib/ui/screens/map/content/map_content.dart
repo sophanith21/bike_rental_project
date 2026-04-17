@@ -25,6 +25,7 @@ class MapContent extends StatelessWidget {
       body: Stack(
         children: [
           FlutterMap(
+            mapController: mapVm.mapController,
             options: MapOptions(
               initialCenter: LatLng(11.556, 104.928),
               initialZoom: 15.2,
@@ -37,6 +38,17 @@ class MapContent extends StatelessWidget {
                     'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
               ),
+
+              if (mapVm.routePoints.isNotEmpty)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: mapVm.routePoints,
+                      strokeWidth: 4,
+                      color: AppTheme.secondary,
+                    ),
+                  ],
+                ),
               MarkerLayer(
                 markers: stationValues
                     .map(
@@ -59,6 +71,20 @@ class MapContent extends StatelessWidget {
                     )
                     .toList(),
               ),
+
+              if (mapVm.userLocation != null)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: mapVm.userLocation!,
+                      child: const Icon(
+                        Symbols.target_rounded,
+                        color: AppTheme.secondary,
+                        size: 32,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
 
@@ -70,6 +96,7 @@ class MapContent extends StatelessWidget {
               spacing: 10,
               children: [
                 SearchBar(
+                  backgroundColor: WidgetStatePropertyAll(Colors.white),
                   leading: const Icon(Icons.search_rounded),
                   onChanged: mapVm.onSearch,
                   controller: mapVm.searchController,
@@ -97,12 +124,11 @@ class MapContent extends StatelessWidget {
                 ),
                 if (mapVm.booking != null)
                   ClipRRect(
-                    borderRadius:
-                        AppTheme.brMedium, // Match your container's radius
+                    borderRadius: AppTheme.brMedium,
                     child: Banner(
                       message: "Booked",
                       location: BannerLocation.topStart,
-                      color: Colors.red, // You can style the banner color here
+                      color: AppTheme.secondary,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
@@ -149,6 +175,14 @@ class MapContent extends StatelessWidget {
                                   color: AppTheme.primary,
                                 ),
                               ),
+                              Text(
+                                "Slot: ${mapVm.findBikeSlot(mapVm.booking!.bikeSlotId)!.slotNumber.toString().padLeft(2, '0')}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: AppTheme.primary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -159,13 +193,41 @@ class MapContent extends StatelessWidget {
             ),
           ),
 
-          if (mapVm.stationsState?.state == AsyncValueState.loading)
+          Positioned(
+            bottom: 20,
+            right: 16,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: AppTheme.primary, width: 2),
+              ),
+              heroTag: 'location',
+              // mini: true,
+              onPressed: mapVm.loadUserLocation,
+              tooltip: 'My Location',
+              child: mapVm.userLocationState?.state == AsyncValueState.loading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppTheme.accent2,
+                      ),
+                    )
+                  : const Icon(Icons.my_location, color: AppTheme.secondary),
+            ),
+          ),
+
+          if (mapVm.stationsState?.state == AsyncValueState.loading ||
+              mapVm.routeState?.state == AsyncValueState.loading)
             Center(child: CircularProgressIndicator()),
 
           if (mapVm.selectedStation != null)
             DraggableScrollableSheet(
               initialChildSize: 0.37,
-              minChildSize: 0,
+              minChildSize: 0.1,
               maxChildSize: 1,
               expand: true,
               snap: true,
@@ -185,6 +247,10 @@ class MapContent extends StatelessWidget {
                       mapVm.bikeSlotStatus,
                     ),
                     onDeselect: mapVm.clearSelection,
+                    onDirection: mapVm.loadRoute,
+                    onClearRoute: mapVm.clearRoute,
+                    isDirection:
+                        mapVm.routeState?.state == AsyncValueState.success,
                     onBooked: (slot) {
                       Navigator.push(
                         context,

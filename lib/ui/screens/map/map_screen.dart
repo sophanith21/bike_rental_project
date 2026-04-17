@@ -15,7 +15,7 @@ class MapScreen extends StatelessWidget {
       create: (_) => MapViewModel(
         bikeStationRepository: context.read<BikeStationRepository>(),
         bikeSlotRepository: context.read<BikeSlotRepository>(),
-        bikeSlotStatus: BikeSlotStatus.occupied,
+        // bikeSlotStatus: BikeSlotStatus.occupied,
         userState: context.read<UserState>(),
       ),
       update: (BuildContext context, UserState value, MapViewModel? previous) {
@@ -25,7 +25,7 @@ class MapScreen extends StatelessWidget {
         }
         return MapViewModel(
           bikeStationRepository: context.read<BikeStationRepository>(),
-          bikeSlotStatus: BikeSlotStatus.occupied,
+          // bikeSlotStatus: BikeSlotStatus.occupied,
           bikeSlotRepository: context.read<BikeSlotRepository>(),
           userState: value,
         );
