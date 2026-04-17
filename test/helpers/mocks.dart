@@ -25,6 +25,7 @@ void registerTestFallbacks() {
       startDate: DateTime.now(),
       expirationDate: DateTime.now(),
       passSubscriptionId: '',
+      passName: '',
     ),
   );
 }

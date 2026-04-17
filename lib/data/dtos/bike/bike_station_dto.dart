@@ -6,11 +6,13 @@ class BikeStationDto {
   static const String stationNameKey = 'stationName';
   static const String latitudeKey = 'latitude';
   static const String longitudeKey = 'longitude';
+  static const String bikeRentPriceKey = 'bikeRentPrice';
 
   static BikeStation fromJson(String id, Map<String, dynamic> json) {
     assert(json[stationNameKey] is String);
     assert(json[latitudeKey] is num);
     assert(json[longitudeKey] is num);
+    assert(json[bikeRentPriceKey] is num);
 
     return BikeStation(
       id: id,
@@ -19,6 +21,7 @@ class BikeStationDto {
         (json[latitudeKey] as num).toDouble(),
         (json[longitudeKey] as num).toDouble(),
       ),
+      bikeRentPrice: json[bikeRentPriceKey],
     );
   }
 
@@ -27,6 +30,7 @@ class BikeStationDto {
       stationNameKey: bikeStation.stationName,
       latitudeKey: bikeStation.stationLocation.latitude,
       longitudeKey: bikeStation.stationLocation.longitude,
+      bikeRentPriceKey: bikeStation.bikeRentPrice,
     };
   }
 }

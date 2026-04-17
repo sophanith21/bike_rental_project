@@ -15,10 +15,17 @@ class PassSelectionScreen extends StatelessWidget {
       PassSubscriptionRepository,
       PassSelectionViewModel
     >(
-      update: (context, value, value2, previous) => PassSelectionViewModel(
-        userState: value,
-        passSubscriptionRepository: value2,
-      ),
+      update: (context, value, value2, previous) {
+        if (previous != null) {
+          previous.updateUserState(value);
+
+          return previous;
+        }
+        return PassSelectionViewModel(
+          userState: value,
+          passSubscriptionRepository: value2,
+        );
+      },
       create: (BuildContext context) {
         return PassSelectionViewModel(
           userState: context.read<UserState>(),

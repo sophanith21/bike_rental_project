@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class PassSelectionViewModel extends ChangeNotifier {
-  final UserState userState;
+  UserState userState;
   final PassSubscriptionRepository passSubscriptionRepository;
   bool isDisposed = false;
   PassSelectionViewModel({
@@ -15,6 +15,10 @@ class PassSelectionViewModel extends ChangeNotifier {
     required this.passSubscriptionRepository,
   }) {
     init();
+  }
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
   }
 
   void init() async {

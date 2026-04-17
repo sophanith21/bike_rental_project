@@ -1,5 +1,6 @@
-import 'package:bike_rental_project/ui/map/map_screen.dart';
+import 'package:bike_rental_project/ui/screens/map/map_screen.dart';
 import 'package:bike_rental_project/ui/screens/pass_selection/pass_selection_screen.dart';
+import 'package:bike_rental_project/ui/screens/profile/profile_screen.dart';
 import 'package:bike_rental_project/ui/theme/app_theme.dart';
 import 'package:bike_rental_project/utils/nav_util.dart';
 import 'package:bike_rental_project/ui/widgets/navigation_bar/bike_rental_bottom_navigation_bar.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
           valueListenable: NavUtil.tabIndex,
           builder: (BuildContext context, value, Widget? child) {
             return Scaffold(
+              backgroundColor: AppTheme.bgColor,
               appBar: AppBar(
                 title: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -70,7 +72,7 @@ class _MyAppState extends State<MyApp> {
                     index: value.index,
                     children: [
                       // MUST BE CONST to prevent rebuilt
-                      const Placeholder(),
+                      const ProfileScreen(),
                       const MapScreen(),
                       const PassSelectionScreen(),
                     ],

@@ -27,6 +27,7 @@ void main() {
         expirationDate: expiry,
         startDate: DateTime.now(),
         passSubscriptionId: 's1',
+        passName: '',
       );
 
       when(
@@ -39,6 +40,7 @@ void main() {
       final userState = UserState(
         userRepository: mockUserRepo,
         userPassRepository: mockPassRepo,
+        bookingRepository: null,
       );
 
       // Wait for the async init to finish and the stream to emit

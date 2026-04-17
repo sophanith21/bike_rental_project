@@ -8,7 +8,7 @@ class StationDetailsPanel extends StatelessWidget {
   final BikeSlotStatus status;
   final ScrollController scrollController;
   final VoidCallback onDeselect;
-  final VoidCallback onBooked;
+  final ValueChanged<BikeSlot> onBooked;
   final List<BikeSlot> bikeSlots;
 
   const StationDetailsPanel({
@@ -74,11 +74,6 @@ class StationDetailsPanel extends StatelessWidget {
                 Icons.bike_scooter_rounded,
                 size: 50,
                 color: AppTheme.primary,
-              ),
-
-              IconButton(
-                onPressed: onDeselect,
-                icon: Icon(Icons.cancel_outlined, color: AppTheme.primary),
               ),
             ],
           ),
@@ -168,7 +163,7 @@ class StationDetailsPanel extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     final slot = bikeSlots[index];
-                    return buildSlotItem(slot.slotNumber, onBooked);
+                    return buildSlotItem(slot, onBooked);
                   },
                 ),
               ],
@@ -179,9 +174,9 @@ class StationDetailsPanel extends StatelessWidget {
     );
   }
 
-  Widget buildSlotItem(int slotNumber, VoidCallback onBooked) {
+  Widget buildSlotItem(BikeSlot slot, ValueChanged<BikeSlot> onBooked) {
     return GestureDetector(
-      onTap: onBooked,
+      onTap: () => onBooked(slot),
       child: Row(
         children: [
           Container(
@@ -191,7 +186,7 @@ class StationDetailsPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              "Slots ${slotNumber.toString().padLeft(2, '0')}",
+              "Slots ${slot.slotNumber.toString().padLeft(2, '0')}",
               style: TextStyle(fontSize: 16, color: colorStatus),
             ),
           ),

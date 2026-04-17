@@ -12,4 +12,14 @@ class BikeSlotProductRepository implements BikeSlotRepository {
         .map((doc) => BikeSlotDto.fromJson(doc.id, doc.data()))
         .toList();
   }
+
+  @override
+  Future<void> updateBikeSlotStatus(
+    String bikeSlotId,
+    BikeSlotStatus status,
+  ) async {
+    await db.collection('bike_slots').doc(bikeSlotId).update({
+      BikeSlotDto.bikeSlotStatusKey: status.name,
+    });
+  }
 }

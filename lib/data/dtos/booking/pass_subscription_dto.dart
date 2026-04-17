@@ -1,7 +1,5 @@
 import 'package:bike_rental_project/data/dtos/booking/benefit_dto.dart';
-import 'package:bike_rental_project/model/booking/benefit.dart';
 import 'package:bike_rental_project/model/booking/pass_subscription.dart';
-import 'package:flutter/material.dart';
 
 class PassSubscriptionDto {
   static const String idKey = 'id';

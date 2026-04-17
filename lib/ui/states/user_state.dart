@@ -1,18 +1,25 @@
 import 'dart:async';
 
+import 'package:bike_rental_project/data/repositories/booking/booking_repository.dart';
 import 'package:bike_rental_project/data/repositories/user/user_repository.dart';
 import 'package:bike_rental_project/data/repositories/user_pass/user_pass_repository.dart';
+import 'package:bike_rental_project/model/booking/booking.dart';
 import 'package:bike_rental_project/model/user/user.dart';
 import 'package:bike_rental_project/model/user/user_pass.dart';
 import 'package:flutter/material.dart';
 
 class UserState extends ChangeNotifier {
   final UserPassRepository userPassRepository;
+  final BookingRepository bookingRepository;
+
   final UserRepository userRepository;
   bool isDisposed = false;
 
+  Booking? booking;
+
   Timer? expirationTimer;
   StreamSubscription<UserPass?>? userPassStreamSubscription;
+  StreamSubscription<Booking?>? bookingStreamSubscription;
 
   User? user;
   UserPass? userPass;
@@ -21,6 +28,7 @@ class UserState extends ChangeNotifier {
     this.userPass,
     required this.userPassRepository,
     required this.userRepository,
+    required this.bookingRepository,
   }) {
     init();
   }
@@ -55,13 +63,30 @@ class UserState extends ChangeNotifier {
               if (!isDisposed) notifyListeners();
             },
           );
+
+      bookingStreamSubscription = bookingRepository
+          .getActiveBooking(user!.id)
+          .listen(
+            (data) {
+              booking = data;
+              debugPrint("Data: $booking");
+
+              if (!isDisposed) notifyListeners();
+            },
+            onError: (err) {
+              if (!isDisposed) notifyListeners();
+              debugPrint(err);
+            },
+          );
     }
     if (!isDisposed) notifyListeners();
   }
 
   @override
   void dispose() {
+    print("DEBUG: UserState is being DISPOSED!");
     userPassStreamSubscription?.cancel();
+    bookingStreamSubscription?.cancel();
     expirationTimer?.cancel();
     isDisposed = true;
     super.dispose();
@@ -78,9 +103,22 @@ class UserState extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUserPass(UserPass updatedUserPass) async {
+  Future<void> createUserPass(UserPass updatedUserPass) async {
     if (userPass != updatedUserPass) {
       await userPassRepository.createUserPass(updatedUserPass);
     }
+  }
+
+  Future<void> createBooking(Booking newBooking) async {
+    if (booking != newBooking) {
+      await bookingRepository.createNewBooking(newBooking);
+    }
+  }
+
+  Future<void> updateBookingStatus(
+    String bookingId,
+    BookingStatus newStatus,
+  ) async {
+    await bookingRepository.updateBookingStatus(bookingId, newStatus);
   }
 }

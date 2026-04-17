@@ -7,9 +7,13 @@ import 'package:uuid/uuid.dart';
 
 class PaymentViewModel extends ChangeNotifier {
   final PassSubscription selectedSubs;
-  final UserState userState;
+  UserState userState;
 
   PaymentViewModel({required this.selectedSubs, required this.userState});
+  void updateUserState(UserState newUserState) {
+    userState = newUserState;
+    notifyListeners();
+  }
 
   AsyncValue<bool>? paymentStatus;
   Future<void> confirmPayment() async {
@@ -22,8 +26,9 @@ class PaymentViewModel extends ChangeNotifier {
         expirationDate: DateTime.now().add(selectedSubs.validDuration),
         passSubscriptionId: selectedSubs.id,
         userId: userState.user!.id,
+        passName: selectedSubs.title,
       );
-      await userState.updateUserPass(confirmedPass);
+      await userState.createUserPass(confirmedPass);
       paymentStatus = AsyncValue.success(true);
     } catch (err) {
       paymentStatus = AsyncValue.error(err);
