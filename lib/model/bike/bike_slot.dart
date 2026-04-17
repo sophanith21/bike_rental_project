@@ -1,4 +1,4 @@
-enum BikeSlotStatus { empty, occupied }
+enum BikeSlotStatus { empty, occupied, booked }
 
 class BikeSlot {
   final String id;
@@ -12,4 +12,18 @@ class BikeSlot {
     required this.bikeStationId,
     required this.bikeSlotStatus,
   });
+
+  BikeSlot copyWith({
+    String? id,
+    int? slotNumber,
+    String? bikeStationId,
+    BikeSlotStatus? bikeSlotStatus,
+  }) {
+    return BikeSlot(
+      id: id ?? this.id,
+      slotNumber: slotNumber ?? this.slotNumber,
+      bikeStationId: bikeStationId ?? this.bikeStationId,
+      bikeSlotStatus: bikeSlotStatus ?? this.bikeSlotStatus,
+    );
+  }
 }

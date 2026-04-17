@@ -30,26 +30,21 @@ class UserPassRepositoryProd implements UserPassRepository {
 
   @override
   Future<UserPass> createUserPass(UserPass newUserPass) async {
+    // 1. Perform query before the transaction
+    final querySnapshot = await firestore
+        .collection("user_passes")
+        .where("userId", isEqualTo: newUserPass.userId)
+        .where("expirationDate", isGreaterThan: Timestamp.now())
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      throw Exception("User currently has an active subscription.");
+    }
+
+    // 2. Start transaction only for the write
     return await firestore.runTransaction((transaction) async {
-      // 1. PERFORM THE READ
-      // Transactions require all reads to happen before any writes.
-      final querySnapshot = await firestore
-          .collection("user_passes")
-          .where("userId", isEqualTo: newUserPass.userId)
-          .where("expirationDate", isGreaterThan: Timestamp.now())
-          .limit(1)
-          .get();
-
-      // 2. CHECK FOR ACTIVE PA
-      if (querySnapshot.docs.isNotEmpty) {
-        throw Exception("User currently has an active subscription.");
-      }
-
-      // 3. PERFORM THE WRITE
       final docRef = firestore.collection("user_passes").doc(newUserPass.id);
-
       transaction.set(docRef, UserPassDto.toJson(newUserPass));
-
       return newUserPass;
     });
   }

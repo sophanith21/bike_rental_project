@@ -7,4 +7,17 @@ class BikeSlotMockRepository implements BikeSlotRepository {
   Future<List<BikeSlot>> getBikeSlots() async {
     return mockBikeSlots;
   }
+
+  @override
+  Future<void> updateBikeSlotStatus(
+    String bikeSlotId,
+    BikeSlotStatus status,
+  ) async {
+    int targetIndex = mockBikeSlots.indexWhere((e) => e.id == bikeSlotId);
+    if (targetIndex != -1) {
+      mockBikeSlots[targetIndex] = mockBikeSlots[targetIndex].copyWith(
+        bikeSlotStatus: status,
+      );
+    }
+  }
 }

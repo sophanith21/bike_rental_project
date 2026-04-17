@@ -1,11 +1,16 @@
+import 'package:bike_rental_project/data/repositories/bike_slot/bike_slot_repository.dart';
 import 'package:bike_rental_project/data/repositories/booking/booking_repository.dart';
+import 'package:bike_rental_project/model/bike/bike_slot.dart';
 import 'package:bike_rental_project/model/booking/booking.dart';
 import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 class BookingRepositoryMock implements BookingRepository {
+  final BikeSlotRepository bikeSlotRepository;
   final BehaviorSubject<List<Booking>> _allBookingsSubject =
       BehaviorSubject<List<Booking>>.seeded([]);
+
+  BookingRepositoryMock({required this.bikeSlotRepository});
 
   @override
   Future<void> createNewBooking(Booking newBook) async {
@@ -20,7 +25,10 @@ class BookingRepositoryMock implements BookingRepository {
     if (hasOngoing) {
       throw Exception("There should only be one booking existing at a time");
     }
-
+    await bikeSlotRepository.updateBikeSlotStatus(
+      newBook.bikeSlotId,
+      BikeSlotStatus.occupied,
+    );
     _allBookingsSubject.add([...currentList, newBook]);
   }
 

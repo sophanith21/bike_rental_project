@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 class UserState extends ChangeNotifier {
   final UserPassRepository userPassRepository;
   final BookingRepository bookingRepository;
+
   final UserRepository userRepository;
   bool isDisposed = false;
 
