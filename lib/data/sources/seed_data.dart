@@ -1,0 +1,472 @@
+import 'package:bike_rental_project/data/dtos/bike/bike_slot_dto.dart';
+import 'package:bike_rental_project/data/dtos/bike/bike_station_dto.dart';
+import 'package:bike_rental_project/data/dtos/booking/pass_subscription_dto.dart';
+import 'package:bike_rental_project/data/dtos/user/user_dto.dart';
+import 'package:bike_rental_project/data/dtos/user/user_pass_dto.dart';
+import 'package:bike_rental_project/firebase_options.dart';
+import 'package:bike_rental_project/model/bike/bike_slot.dart';
+import 'package:bike_rental_project/model/bike/bike_station.dart';
+import 'package:bike_rental_project/model/booking/benefit.dart';
+import 'package:bike_rental_project/model/booking/pass_subscription.dart';
+import 'package:bike_rental_project/model/user/user.dart';
+import 'package:bike_rental_project/model/user/user_pass.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+class SeedData {
+  static final _db = FirebaseFirestore.instance;
+
+  // Collection names
+  static const String usersCollection = 'users';
+  static const String userPassesCollection = 'user_passes';
+  static const String bookingsCollection = 'bookings';
+  static const String passSubscriptionsCollection = 'pass_subscriptions';
+  static const String bikeSlotsCollection = 'bike_slots';
+  static const String bikeStationsCollection = 'bike_stations';
+
+  static Future<void> seedAll({bool reset = false}) async {
+    if (reset) {
+      print('🗑️  Clearing existing data...');
+      await _clearCollection(usersCollection);
+      await _clearCollection(userPassesCollection);
+      await _clearCollection(bookingsCollection);
+      await _clearCollection(passSubscriptionsCollection);
+      await _clearCollection(bikeSlotsCollection);
+      await _clearCollection(bikeStationsCollection);
+      print('✅ All collections cleared!\n');
+    }
+
+    await seedUsers();
+    await seedPassSubscriptions();
+    await seedUserPasses();
+    await seedBikeStations();
+    await seedBikeSlots();
+
+    print('\n🎉 All mock data seeded successfully!');
+  }
+
+  // delete all docs in a collection
+  static Future<void> _clearCollection(String collectionName) async {
+    final snapshot = await _db.collection(collectionName).get();
+    for (final doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
+    print('🗑️  Cleared: $collectionName');
+  }
+
+  // Users
+  static Future<void> seedUsers() async {
+    for (final user in users) {
+      await _db
+          .collection(usersCollection)
+          .doc(user.id)
+          .set(UserDto.toJson(user));
+      print('👤 Added user: ${user.name}');
+    }
+  }
+
+  // Pass Subscriptions
+  static Future<void> seedPassSubscriptions() async {
+    for (final pass in passes) {
+      await _db
+          .collection(passSubscriptionsCollection)
+          .doc(pass.id)
+          .set(PassSubscriptionDto.toJson(pass));
+      print('🎫 Added pass subscription: ${pass.title}');
+    }
+  }
+
+  //User Passes
+  static Future<void> seedUserPasses() async {
+    for (final userPass in userPasses) {
+      await _db
+          .collection(userPassesCollection)
+          .doc(userPass.id)
+          .set(UserPassDto.toJson(userPass));
+      print('🪪 Added user pass: ${userPass.id} (${userPass.passStatus.name})');
+    }
+  }
+
+  // Bike Stations
+  static Future<void> seedBikeStations() async {
+    for (final station in stations) {
+      await _db
+          .collection(bikeStationsCollection)
+          .doc(station.id)
+          .set(BikeStationDto.toJson(station));
+      print('📍 Added station: ${station.stationName}');
+    }
+  }
+
+  // Bike Slots
+  static Future<void> seedBikeSlots() async {
+    for (final slot in slots) {
+      await _db
+          .collection(bikeSlotsCollection)
+          .doc(slot.id)
+          .set(BikeSlotDto.toJson(slot));
+      print(
+        '🚲 Added slot: ${slot.id} at station ${slot.bikeStationId} (${slot.bikeSlotStatus.name})',
+      );
+    }
+  }
+
+  static final users = [
+    User(id: 'user_001', name: 'Allya'),
+    User(id: 'user_002', name: 'Reaksa'),
+    User(id: 'user_003', name: 'David'),
+    User(id: 'user_004', name: 'Panith'),
+  ];
+
+  static final passes = [
+    PassSubscription(
+      id: "pass_sub_001",
+      title: "Daily Explorer",
+      price: 2.0,
+      coreBenefits: [
+        Benefit(
+          iconData: Symbols.nest_clock_farsight_analog,
+          label: "Unlimited 30mins ride",
+        ),
+        Benefit(iconData: Symbols.calendar_check, label: "Valid for 24 hours"),
+        Benefit(
+          iconData: Symbols.pedal_bike_rounded,
+          label: "Quick \"Grab & Go\" access",
+        ),
+      ],
+      validDuration: Duration(days: 1),
+    ),
+    PassSubscription(
+      id: "pass_sub_002",
+      title: "Monthly Habit",
+      price: 15.0,
+      coreBenefits: [
+        Benefit(
+          iconData: Symbols.nest_clock_farsight_analog,
+          label: "Unlimited 30mins ride",
+        ),
+        Benefit(
+          iconData: Symbols.calendar_check,
+          label: "Valid for 1 month (30 days)",
+        ),
+        Benefit(
+          iconData: Symbols.pedal_bike_rounded,
+          label: "Quick \"Grab & Go\" access",
+        ),
+      ],
+
+      validDuration: Duration(days: 30),
+    ),
+    PassSubscription(
+      id: "pass_sub_003",
+      title: "Annual Member",
+      price: 99.00,
+      coreBenefits: [
+        Benefit(
+          iconData: Symbols.nest_clock_farsight_analog,
+          label: "Unlimited 30mins ride",
+        ),
+        Benefit(
+          iconData: Symbols.calendar_check,
+          label: "Valid for 12 months (365 days)",
+        ),
+        Benefit(
+          iconData: Symbols.pedal_bike_rounded,
+          label: "Quick \"Grab & Go\" access",
+        ),
+      ],
+
+      validDuration: Duration(days: 365),
+    ),
+  ];
+
+  static final now = DateTime.now();
+
+  static final userPasses = [
+    UserPass(
+      id: 'user_pass_001',
+      userId: 'user_001',
+      passSubscriptionId: 'pass_sub_002',
+      startDate: now,
+      expirationDate: now.add(const Duration(days: 7)),
+      passName: 'Monthly Habit',
+    ),
+    UserPass(
+      id: 'user_pass_002',
+      userId: 'user_002',
+      passSubscriptionId: 'pass_sub_003',
+      startDate: now.subtract(const Duration(days: 35)),
+      expirationDate: now.subtract(const Duration(days: 5)),
+      passName: 'Annual Member',
+    ),
+    UserPass(
+      id: 'user_pass_003',
+      userId: 'user_003',
+      passSubscriptionId: 'pass_sub_001',
+      startDate: now,
+      expirationDate: now.add(const Duration(days: 1)),
+      passName: 'Daily Explorer',
+    ),
+  ];
+
+  static final stations = [
+    BikeStation(
+      id: 'station_001',
+      stationName: 'Central Market Station',
+      stationLocation: const LatLng(11.5693, 104.9225),
+      bikeRentPrice: 2.0,
+    ),
+    BikeStation(
+      id: 'station_002',
+      stationName: 'Royal Palace Station',
+      stationLocation: const LatLng(11.5625, 104.9306),
+      bikeRentPrice: 2.0,
+    ),
+    BikeStation(
+      id: 'station_003',
+      stationName: 'Riverside Station',
+      stationLocation: const LatLng(11.5714, 104.9306),
+      bikeRentPrice: 2.0,
+    ),
+    BikeStation(
+      id: 'station_004',
+      stationName: 'Toul Sleng Station',
+      stationLocation: const LatLng(11.5496, 104.9172),
+      bikeRentPrice: 2.0,
+    ),
+  ];
+
+  static final slots = [
+    BikeSlot(
+      id: 'slot_s1_001',
+      slotNumber: 1,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s1_002',
+      slotNumber: 2,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s1_003',
+      slotNumber: 3,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s1_004',
+      slotNumber: 4,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s1_005',
+      slotNumber: 5,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s1_006',
+      slotNumber: 6,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s1_007',
+      slotNumber: 7,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s1_008',
+      slotNumber: 8,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s1_009',
+      slotNumber: 9,
+      bikeStationId: 'station_001',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+
+    // station_002 — 8 slots
+    BikeSlot(
+      id: 'slot_s2_001',
+      slotNumber: 1,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s2_002',
+      slotNumber: 2,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s2_003',
+      slotNumber: 3,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s2_004',
+      slotNumber: 4,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s2_005',
+      slotNumber: 5,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s2_006',
+      slotNumber: 6,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s2_007',
+      slotNumber: 7,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s2_008',
+      slotNumber: 8,
+      bikeStationId: 'station_002',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+
+    // station_003 — 10 slots
+    BikeSlot(
+      id: 'slot_s3_001',
+      slotNumber: 1,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s3_002',
+      slotNumber: 2,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s3_003',
+      slotNumber: 3,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s3_004',
+      slotNumber: 4,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s3_005',
+      slotNumber: 5,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s3_006',
+      slotNumber: 6,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s3_007',
+      slotNumber: 7,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s3_008',
+      slotNumber: 8,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s3_009',
+      slotNumber: 9,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s3_010',
+      slotNumber: 10,
+      bikeStationId: 'station_003',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+
+    // station_004 — 9 slots
+    BikeSlot(
+      id: 'slot_s4_001',
+      slotNumber: 1,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s4_002',
+      slotNumber: 2,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s4_003',
+      slotNumber: 3,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s4_004',
+      slotNumber: 4,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s4_005',
+      slotNumber: 5,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s4_006',
+      slotNumber: 6,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s4_007',
+      slotNumber: 7,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+    BikeSlot(
+      id: 'slot_s4_008',
+      slotNumber: 8,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.empty,
+    ),
+    BikeSlot(
+      id: 'slot_s4_009',
+      slotNumber: 9,
+      bikeStationId: 'station_004',
+      bikeSlotStatus: BikeSlotStatus.occupied,
+    ),
+  ];
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  SeedData.seedAll();
+}
